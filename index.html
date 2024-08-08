@@ -1,4 +1,5 @@
 
+
 </html>
 
 <!DOCTYPE html>
@@ -15,37 +16,69 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      overflow: hidden;
+    }
+
+    #contador {
+      font-size: 2em;
+      text-align: center;
+      color: #ffffff;
+      background-color: blue;
+      width: 100px;
+      border-radius: 10px;
+      
+      
+      position: relative;
+      right: -650px;
+      bottom: 550px;
     }
   </style>
 </head>
 
 <body>
-
+  <main>
   <canvas id="stage" width="600" height="600"></canvas>
+  <div id="contador">000</div>
+  </main>
 
   <script type="text/javascript">
     window.onload = function() {
       var stage = document.getElementById('stage');
       var context = stage.getContext("2d"); // Obtendo o contexto do canvas
-      
+
       document.addEventListener("keydown", keyPush)
-      
+
       setInterval(game, 1000 / 15); // Chama a função game a cada 1000/15 milissegundos
 
       const vel = 1;
-      var vx = 0, vy = 0; 
-      var px = 10, py = 15;
+      var vx = 0 
+      var vy = 0
+      
+      
+      //Cabeça da cobra laele
+      
+      var px = Math.floor(Math.random() * 10)
+      var py = Math.floor(Math.random() * 10)
+      
       var tp = 20;
       var qp = 30;
-      var ax = 15, ay = 15;
+
+      // Objetos de pontos
+      var redx =  Math.floor(Math.random() * qp)
+      var redy =  Math.floor(Math.random() * qp)
+      var whitex = Math.floor(Math.random() * qp)
+      var whitey = Math.floor(Math.random() * qp)
+      var purplex = Math.floor(Math.random() * qp)
+      var purpley = Math.floor(Math.random() * qp)
 
       var trail = [];
-      var tail = 5;
+      var tail = 3;
 
-      
+
 
       function game() {
-
+          //tela infinita
         px += vx;
         py += vy;
 
@@ -69,15 +102,21 @@
         context.fillRect(0, 0, stage.width, stage.height); // Preenchendo o canvas com a cor preta
 
         context.fillStyle = "red"; // Definindo a cor de preenchimento
-        context.fillRect(ax * tp, ay * tp, tp, tp);
+        context.fillRect(redx * tp, redy * tp, tp, tp);
 
-        context.fillStyle = "gray";
+        context.fillStyle = "white"; // Definindo a cor de preenchimento
+        context.fillRect(whitex * tp, whitey * tp, tp, tp);
+
+        context.fillStyle = "purple";
+        context.fillRect(purplex * tp, purpley * tp, tp, tp)
+
+        context.fillStyle = "green";
         for (var i = 0; i < trail.length; i++) {
           context.fillRect(trail[i].x * tp, trail[i].y * tp, tp-1, tp-1);
 
           if (trail[i].x == px && trail[i].y == py) {
             vx = 0; 
-            vy = 0; 
+            vy = 0;     
           }
         }
 
@@ -86,14 +125,45 @@
           trail.shift();
         }
 
-        if (ax == px && ay == py) {
+        if (redx == px && redy == py) {
           tail++;
-          ax = Math.floor(Math.random() * qp); 
-          ay = Math.floor(Math.random() * qp); 
+          redx = Math.floor(Math.random() * qp); 
+          redy = Math.floor(Math.random() * qp); 
+          whitex = Math.floor(Math.random() * qp); 
+          whitey = Math.floor(Math.random() * qp);
+          purplex = Math.floor(Math.random() * qp); 
+          purpley = Math.floor(Math.random() * qp);
         }
 
-        
+        if (whitex == px && whitey == py) {
+          tail = tail - (tail/2);
+          whitex = Math.floor(Math.random() * qp); 
+          whitey = Math.floor(Math.random() * qp); 
+        }
+
+        if (purplex == px && purpley == py) {
+          location.reload()
+        }
+
+        //contador
+        let contador = document.getElementById("contador")
+        contador.innerHTML = parseInt(tail);
+
+        if (tail < 1) {
+          redx = Math.floor(Math.random() * qp); 
+          redy = Math.floor(Math.random() * qp); 
+          whitex = Math.floor(Math.random() * qp); 
+          whitey = Math.floor(Math.random() * qp);
+          purplex = Math.floor(Math.random() * qp); 
+          purpley = Math.floor(Math.random() * qp);
+          tail = 3
+        }
+
+      
+
+
       }
+      
       function keyPush(event) {
 
         switch (event.keyCode) {
