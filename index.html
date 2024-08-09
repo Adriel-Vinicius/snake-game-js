@@ -1,7 +1,3 @@
-
-
-</html>
-
 <!DOCTYPE html>
 <html>
 
@@ -18,6 +14,36 @@
       align-items: center;
 
       overflow: hidden;
+      background-color: gray;
+    }
+
+    main > #space_around {
+      display: flex;
+      justify-content: space-around;
+
+    }
+
+    .margin {
+      margin: 20px;
+      font-size: 1em;
+      text-align: center;
+      color: #ffffff;
+      background-color: rgb(5, 5, 5);
+      width: 100px;
+      border-radius: 10px;
+    }
+
+    #life {
+      background-color: red;
+    }
+
+    #life_Menos {
+      background-color: white;
+      color: black;
+    }
+
+    #game_Over {
+      background-color: purple;
     }
 
     #contador {
@@ -27,19 +53,31 @@
       background-color: blue;
       width: 100px;
       border-radius: 10px;
-      
-      
-      position: relative;
-      right: -650px;
-      bottom: 550px;
+
+
+
     }
+
+
   </style>
 </head>
 
 <body>
   <main>
-  <canvas id="stage" width="600" height="600"></canvas>
-  <div id="contador">000</div>
+    <section id="space_around">
+
+      <canvas id="stage" width="600" height="600"></canvas>
+
+      <section id="marcadores">
+
+        <div id="contador" class="margin">000</div>
+        <div id="life" class="margin">LIFE</div>
+        <div id="life_Menos" class="margin">LIFE -50%</div>
+        <div id="game_Over" class="margin">GAME OVER</div>
+
+      </section>  
+
+    </section>  
   </main>
 
   <script type="text/javascript">
@@ -52,15 +90,17 @@
       setInterval(game, 1000 / 15); // Chama a função game a cada 1000/15 milissegundos
 
       const vel = 1;
-      var vx = 0 
+      var vx = 1
       var vy = 0
-      
-      
+
+
+
+
       //Cabeça da cobra laele
-      
+
       var px = Math.floor(Math.random() * 10)
       var py = Math.floor(Math.random() * 10)
-      
+
       var tp = 20;
       var qp = 30;
 
@@ -71,9 +111,23 @@
       var whitey = Math.floor(Math.random() * qp)
       var purplex = Math.floor(Math.random() * qp)
       var purpley = Math.floor(Math.random() * qp)
+      var two_Thanosx = Math.floor(Math.random() * qp)
+      var two_Thanosy = Math.floor(Math.random() * qp)
+      var two_Game_Overx = Math.floor(Math.random() * qp)
+      var two_Game_Overy = Math.floor(Math.random() * qp)
 
       var trail = [];
       var tail = 3;
+
+      function restartGame() {
+        px = Math.floor(Math.random() * 10);
+        py = Math.floor(Math.random() * 10);
+        vx = 1;
+        vy = 0;
+        tail = 3;
+        trail = [];
+        position_Random();
+      }
 
 
 
@@ -98,6 +152,24 @@
           py = 0;
         }
 
+        
+
+
+        function position_Random() {
+
+          redx = Math.floor(Math.random() * qp); 
+          redy = Math.floor(Math.random() * qp); 
+          whitex = Math.floor(Math.random() * qp); 
+          whitey = Math.floor(Math.random() * qp);
+          purplex = Math.floor(Math.random() * qp); 
+          purpley = Math.floor(Math.random() * qp);
+          two_Thanosx = Math.floor(Math.random() * qp);
+          two_Thanosy = Math.floor(Math.random() * qp);
+          two_Game_Overx = Math.floor(Math.random() * qp);
+          two_Game_Overy = Math.floor(Math.random() * qp);
+        }
+        
+        
         context.fillStyle = "black"; // Definindo a cor de preenchimento
         context.fillRect(0, 0, stage.width, stage.height); // Preenchendo o canvas com a cor preta
 
@@ -111,12 +183,18 @@
         context.fillRect(purplex * tp, purpley * tp, tp, tp)
 
         context.fillStyle = "green";
+        
+
+        
+
         for (var i = 0; i < trail.length; i++) {
           context.fillRect(trail[i].x * tp, trail[i].y * tp, tp-1, tp-1);
 
-          if (trail[i].x == px && trail[i].y == py) {
+          if (trail[i].x == px && trail[i].y == py && tail > 3) {
             vx = 0; 
-            vy = 0;     
+            vy = 0;  
+            restartGame() //reinicia caso eu me encoste
+
           }
         }
 
@@ -127,43 +205,176 @@
 
         if (redx == px && redy == py) {
           tail++;
-          redx = Math.floor(Math.random() * qp); 
-          redy = Math.floor(Math.random() * qp); 
-          whitex = Math.floor(Math.random() * qp); 
-          whitey = Math.floor(Math.random() * qp);
-          purplex = Math.floor(Math.random() * qp); 
-          purpley = Math.floor(Math.random() * qp);
+          position_Random() //Reposiciona os objetos de colisão
+        }
+
+        if (purplex == px && purpley == py) {
+            tail = 3
+            position_Random()
         }
 
         if (whitex == px && whitey == py) {
           tail = tail - (tail/2);
-          whitex = Math.floor(Math.random() * qp); 
-          whitey = Math.floor(Math.random() * qp); 
+
+          position_Random()
         }
 
-        if (purplex == px && purpley == py) {
-          location.reload()
+        if (tail < 1) {
+          position_Random()
+          tail = 3
         }
+
+        //Aumento de dificuldade 10 ====================>
+
+        //Cores dos marcadores
+        var life = document.getElementById('life')
+        var life_Menos = document.getElementById('life_Menos')
+        var game_Over = document.getElementById('game_Over')
+
+
+
+        //muda a cor dos colisores nivel 10
+
+        
+        
+        function dificuldade() {
+
+
+          
+  
+          if (two_Thanosx == px && two_Thanosy == py) {
+            tail = tail - (tail/2);
+            position_Random() //Reposiciona os objetos de colisão
+          }
+
+          if (two_Game_Overx == px && two_Game_Overy == py) {
+            tail = 3;
+            position_Random() //Reposiciona os objetos de colisão
+          }
+
+          
+          if (tail >= 10 && tail < 20) {  //LEVEL 2 --------------------------->
+  
+             life.style.background = "purple";
+             life_Menos.style.background = "red";
+             game_Over.style.background = "white";
+  
+             
+  
+             context.fillStyle = "purple";   //LIFE
+             context.fillRect(redx * tp, redy * tp, tp, tp);
+  
+             context.fillStyle = "red";  //LIFE -50%
+             context.fillRect(whitex * tp, whitey * tp, tp, tp);
+  
+             context.fillStyle = "white"; //GAME OVER
+             context.fillRect(purplex * tp, purpley * tp, tp, tp)
+  
+          } else if (tail >= 20 && tail < 30) {  //LEVEL 3 ------------------------>
+            
+             life.style.background = "white";
+             life_Menos.style.background = "purple";
+             game_Over.style.background = "red";
+  
+             context.fillStyle = "white";   //LIFE
+             context.fillRect(redx * tp, redy * tp, tp, tp);
+  
+             context.fillStyle = "purple";  //LIFE -50%
+             context.fillRect(whitex * tp, whitey * tp, tp, tp);
+  
+             context.fillStyle = "red"; //GAME OVER
+             context.fillRect(purplex * tp, purpley * tp, tp, tp)
+            
+          } else if (tail >= 30 && tail < 40) {  //LEVEL 4 ------------------------>
+  
+            
+  
+             life.style.background = "red";
+             life_Menos.style.background = "white";
+             game_Over.style.background = "purple";
+  
+             context.fillStyle = "red";   //LIFE
+             context.fillRect(redx * tp, redy * tp, tp, tp);
+  
+             context.fillStyle = "white";   //LIFE -50% 2
+             context.fillRect(two_Thanosx * tp, two_Thanosy * tp, tp, tp);
+  
+             context.fillStyle = "white";  //LIFE -50%
+             context.fillRect(whitex * tp, whitey * tp, tp, tp);
+  
+             context.fillStyle = "purple"; //GAME OVER
+             context.fillRect(purplex * tp, purpley * tp, tp, tp)
+  
+  
+          } else if (tail >= 40 && tail < 50) {  //LEVEL 5  ------------------------>
+
+
+
+             life.style.background = "red";
+             life_Menos.style.background = "white";
+             game_Over.style.background = "purple";
+
+             context.fillStyle = "red";   //LIFE
+             context.fillRect(redx * tp, redy * tp, tp, tp);
+
+             context.fillStyle = "white";   //LIFE -50% 2
+             context.fillRect(two_Thanosx * tp, two_Thanosy * tp, tp, tp);
+
+             context.fillStyle = "white";  //LIFE -50%
+             context.fillRect(whitex * tp, whitey * tp, tp, tp);
+
+             context.fillStyle = "purple"; //GAME OVER
+             context.fillRect(purplex * tp, purpley * tp, tp, tp)
+
+            context.fillStyle = "purple"; //GAME OVER 2
+            context.fillRect(two_Game_Overx * tp, two_Game_Overy * tp, tp, tp)
+
+            
+
+            
+
+
+
+            
+          }else {  //NORMAL GAME ------------------------------------------------------>
+            //setInterval(game, 1000 / 15);
+            
+  
+             life.style.background = "red";
+             life_Menos.style.background = "white";
+             game_Over.style.background = "purple";
+  
+             context.fillStyle = "red";   //LIFE
+             context.fillRect(redx * tp, redy * tp, tp, tp);
+  
+             context.fillStyle = "white";  //LIFE -50%
+             context.fillRect(whitex * tp, whitey * tp, tp, tp);
+  
+             context.fillStyle = "purple"; //GAME OVER
+             context.fillRect(purplex * tp, purpley * tp, tp, tp)
+  
+            
+          }
+
+        }
+
+        dificuldade()
+
+        
+
 
         //contador
         let contador = document.getElementById("contador")
         contador.innerHTML = parseInt(tail);
 
-        if (tail < 1) {
-          redx = Math.floor(Math.random() * qp); 
-          redy = Math.floor(Math.random() * qp); 
-          whitex = Math.floor(Math.random() * qp); 
-          whitey = Math.floor(Math.random() * qp);
-          purplex = Math.floor(Math.random() * qp); 
-          purpley = Math.floor(Math.random() * qp);
-          tail = 3
-        }
+        //cor de botoes
 
-      
+
+
 
 
       }
-      
+
       function keyPush(event) {
 
         switch (event.keyCode) {
@@ -183,6 +394,10 @@
             vx = 0;
             vy = vel;
           break;
+
+          case 67:
+            tail += 10; //aumenta + 10
+            break;
           default:
 
           break;
@@ -190,6 +405,7 @@
 
       }
     }
+
   </script>
 
 </body>
